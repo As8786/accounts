@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const utils = require('./utils/utils.js');
 
 // call express to return a server (object)
 // app represent a server
@@ -21,22 +22,30 @@ app.get('/accounts/:name', (req, res) => {
 	console.log('params', req.params)
 	let account = accountsDB.find((account) => account.name === req.params.name);
 
-	if (account) {
+	if (!account) {
 		res.send(account);
 	} else {
 		res.status(404).send('Not Found');
 	}
 })
 
-// // POST /accounts
-// app.post('/accounts', (req, res) => {
-// 	let new_account = req.body;
-// 	accountsDB.push(new_account);
-// 	res.send({
-// 		message:'Account created',
-// 		account: new_account
-// 	});
-// })
+// POST /accounts
+app.post('/accounts', (req, res) => {
+	let new_account = req.body;
+	// Check that request body is not empty
+	if (utils.isEmpty(new_account)) {
+      res.status(400).send('Bad Request');
+	} else {
+	  let account = accountsDB.find((account) => account.name === new_account.name);
+	  // Check if the account already in the data base
+	  if (account) {
+	  	res.status(400).send('Bad Request');
+	  } else {
+	  	accountsDB.push(new_account);
+	  	res.send('accout created')
+	  }
+	}
+})
 
 app.listen(3000, (err) => {
   if (err) {
