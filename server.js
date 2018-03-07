@@ -47,6 +47,20 @@ app.post('/accounts', (req, res) => {
 	}
 })
 
+// DELETE /accounts/:name
+app.delete('/accounts/:name', (req, res) => {
+	let name = req.params.name;
+	let accounts = accountsDB.filter((account) => account.name !== name);
+	if (accounts.length != accountsDB.length) {
+		res.send('Account deleted');
+	} else {
+		res.status(400).status({
+			error:'Bad Request',
+			message: 'Account not found'
+		});
+	}
+})
+
 app.listen(3000, (err) => {
   if (err) {
   	console.log('Can not start the server at port 3000')
