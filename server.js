@@ -9,13 +9,24 @@ const app = express();
 app.use(bodyParser.json());
 
 // accounts represent our data base
-const accountsDB = [{name:'mr x', balance:100}];
+const accountsDB = [{name:'test-user', balance:100}];
 
 // Define a route to repond to:
 // GET /accounts
 app.get('/accounts', (req, res) => {
   res.send(accountsDB);
 });
+
+app.get('/accounts/:name', (req, res) => {
+	console.log('params', req.params)
+	let account = accountsDB.find((account) => account.name === req.params.name);
+
+	if (account) {
+		res.send(account);
+	} else {
+		res.status(404).send('Not Found');
+	}
+})
 
 // // POST /accounts
 // app.post('/accounts', (req, res) => {
